@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title</title>
+<style>
+	body{
+		margin: 0;
+		padding: 0;
+		background: #000;
+		overflow: hidden;
+	}
+	#video{
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+	}
+</style>
+</head>
+
+<body onload="load()">
+	<video autoplay id="video"></video>
+</body>
+
+<script>
+  //Global Vars
+  var aVideos = []; //Array with video names
+  var info; //JSon info
+  var index = 0; //Index of video
+  var url = 'info.json'; //playlist file name
+  var video = document.getElementById("video"); //Html5 video element
+  
+  //Function for read the playlist infomation from file
+  function readInfo() {
+  
+    var xhr = new XMLHttpRequest();
+    
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4) {
+        if (xhr.status == 200 || xhr.status == 0) {
+          info = JSON.parse(xhr.responseText);
+          aVideos = info.videos;
+          video.src = 'videos/' + aVideos[0];
+        }
+      } 
+    }
+    
+    xhr.open('GET', url, true);
+    xhr.send();
+  }
+	
+	function nextVideo(){
+    
+    index++;
+    if( index == aVideos.length ){
+      readInfo();
+    }
+    else{
+      video.src = 'videos/' + aVideos[index];
+    }
+    
+  }
+  
+	function load(){
+	  readInfo();
+	  video.addEventListener("ended", nextVideo, false);
+	}
+</script>
+
+</html>
+ 
